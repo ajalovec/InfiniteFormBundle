@@ -11,6 +11,7 @@ namespace Infinite\FormBundle\Form\EventListener;
 
 use AJ\Bundle\BlocksBundle\Model\BlockInterface;
 use Doctrine\Common\Util\ClassUtils;
+use Infinite\FormBundle\Form\EntityFormTypeInterface;
 use Infinite\FormBundle\Form\Util\LegacyFormUtil;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\Extension\Core\EventListener\ResizeFormListener;
@@ -108,7 +109,7 @@ class ResizePolyFormListener extends ResizeFormListener
      */
     protected function getTypeForObject($object)
     {
-        if ($object instanceof BlockInterface) {
+        if ($object instanceof EntityFormTypeInterface) {
             if (array_key_exists($object->getType(), $this->typeMap)) {
                 $type = $this->typeMap[$object->getType()];
 
