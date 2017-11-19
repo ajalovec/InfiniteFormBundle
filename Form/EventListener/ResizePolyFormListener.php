@@ -110,8 +110,8 @@ class ResizePolyFormListener extends ResizeFormListener
     protected function getTypeForObject($object)
     {
         if ($object instanceof EntityFormTypeInterface) {
-            if (array_key_exists($object->getType(), $this->typeMap)) {
-                $type = $this->typeMap[$object->getType()];
+            if (array_key_exists($object->getFormType(), $this->typeMap)) {
+                $type = $this->typeMap[$object->getFormType()];
 
                 return LegacyFormUtil::getType($type);
             }

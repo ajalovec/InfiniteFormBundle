@@ -10,5 +10,9 @@ namespace Infinite\FormBundle\Form;
  */
 interface EntityFormTypeInterface
 {
-    public function getType();
+    /**
+     * Return form
+     * @return string
+     */
+    public function getFormType();
 }
