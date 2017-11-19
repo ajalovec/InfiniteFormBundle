@@ -9,6 +9,7 @@
 
 namespace Infinite\FormBundle\Form\EventListener;
 
+use AJ\Bundle\BlocksBundle\Model\BlockInterface;
 use Doctrine\Common\Util\ClassUtils;
 use Infinite\FormBundle\Form\Util\LegacyFormUtil;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -67,30 +68,30 @@ class ResizePolyFormListener extends ResizeFormListener
 
     /**
      * @param array<FormInterface> $prototypes
-     * @param array                $options
-     * @param bool                 $allowAdd
-     * @param bool                 $allowDelete
-     * @param string               $typeFieldName
-     * @param string               $indexProperty
+     * @param array  $options
+     * @param bool   $allowAdd
+     * @param bool   $allowDelete
+     * @param string $typeFieldName
+     * @param string $indexProperty
      */
     public function __construct(array $prototypes, array $options = array(), $allowAdd = false, $allowDelete = false, $typeFieldName = '_type', $indexProperty = null, $useTypesOptions = false)
     {
-        $this->typeFieldName = $typeFieldName;
-        $this->indexProperty = $indexProperty;
-        $this->useTypesOptions = $useTypesOptions;
+        $this->typeFieldName    = $typeFieldName;
+        $this->indexProperty    = $indexProperty;
+        $this->useTypesOptions  = $useTypesOptions;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $defaultType = null;
+        $defaultType            = null;
 
         foreach ($prototypes as $key => $prototype) {
             /** @var FormInterface $prototype */
             $modelClass = $prototype->getConfig()->getOption('model_class');
-            $type = $prototype->getConfig()->getType()->getInnerType();
+            $type       = $prototype->getConfig()->getType()->getInnerType();
 
             if (null === $defaultType) {
                 $defaultType = $type;
             }
 
-            $this->typeMap[$key] = $type;
+            $this->typeMap[$key]         = $type;
             $this->classMap[$modelClass] = $type;
         }
 
@@ -107,9 +108,17 @@ class ResizePolyFormListener extends ResizeFormListener
      */
     protected function getTypeForObject($object)
     {
+        if ($object instanceof BlockInterface) {
+            if (array_key_exists($object->getType(), $this->typeMap)) {
+                $type = $this->typeMap[$object->getType()];
+
+                return LegacyFormUtil::getType($type);
+            }
+        }
+
         $class = get_class($object);
         $class = ClassUtils::getRealClass($class);
-        $type = $this->type;
+        $type  = $this->type;
 
         if (array_key_exists($class, $this->classMap)) {
             $type = $this->classMap[$class];
@@ -194,9 +203,9 @@ class ResizePolyFormListener extends ResizeFormListener
         // Process entries by IndexProperty
         if (!is_null($this->indexProperty)) {
             // Reindex the submit data by given index
-            $indexedData = array();
+            $indexedData   = array();
             $unindexedData = array();
-            $finalData = array();
+            $finalData     = array();
             foreach ($data as $item) {
                 if (isset($item[$this->indexProperty])) {
                     $indexedData[$item[$this->indexProperty]] = $item;
