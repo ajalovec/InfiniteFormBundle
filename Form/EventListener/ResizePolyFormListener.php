@@ -9,9 +9,8 @@
 
 namespace Infinite\FormBundle\Form\EventListener;
 
-use AJ\Bundle\BlocksBundle\Model\BlockInterface;
 use Doctrine\Common\Util\ClassUtils;
-use Infinite\FormBundle\Form\EntityFormTypeInterface;
+use Infinite\FormBundle\Form\TypeNameInterface;
 use Infinite\FormBundle\Form\Util\LegacyFormUtil;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\Extension\Core\EventListener\ResizeFormListener;
@@ -109,9 +108,9 @@ class ResizePolyFormListener extends ResizeFormListener
      */
     protected function getTypeForObject($object)
     {
-        if ($object instanceof EntityFormTypeInterface) {
-            if (array_key_exists($object->getFormType(), $this->typeMap)) {
-                $type = $this->typeMap[$object->getFormType()];
+        if ($object instanceof TypeNameInterface) {
+            if (array_key_exists($object->getTypeName(), $this->typeMap)) {
+                $type = $this->typeMap[$object->getTypeName()];
 
                 return LegacyFormUtil::getType($type);
             }
@@ -178,7 +177,7 @@ class ResizePolyFormListener extends ResizeFormListener
         foreach ($data as $name => $value) {
             $type = $this->getTypeForObject($value);
             $form->add($name, $type, array_replace(array(
-                'property_path' => '['.$name.']',
+                'property_path' => '[' . $name . ']',
             ), $this->getOptionsForType($type)));
         }
     }
@@ -221,7 +220,7 @@ class ResizePolyFormListener extends ResizeFormListener
                 if ($this->allowAdd) {
                     $type = $this->getTypeForData($item);
                     $form->add($name, $type, array_replace(array(
-                        'property_path' => '['.$name.']',
+                        'property_path' => '[' . $name . ']',
                     ), $this->getOptionsForType($type)));
                 }
 
@@ -263,7 +262,7 @@ class ResizePolyFormListener extends ResizeFormListener
                     if (!$form->has($name)) {
                         $type = $this->getTypeForData($value);
                         $form->add($name, $type, array_replace(array(
-                            'property_path' => '['.$name.']',
+                            'property_path' => '[' . $name . ']',
                         ), $this->getOptionsForType($type)));
                     }
                 }

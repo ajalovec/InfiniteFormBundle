@@ -8,10 +8,10 @@ namespace Infinite\FormBundle\Form;
  * @package   Infinite\FormBundle\Form\EventListener
  * @author    Andraž Jalovec <andraz.jalovec@gmail.com>
  */
-interface EntityFormTypeInterface
+interface TypeNameInterface
 {
     /**
      * @return string
      */
-    public function getFormType();
+    public function getTypeName();
 }
